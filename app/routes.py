@@ -13,23 +13,26 @@ class Planet:
 # Create a list of `Planet` instances
 # (ordered nearest to the sun to the furthest)
 planets = [
-    Planet(1, "Mercury", "The closest to the sun. Rocky terrestrial planet.", False),
-    Planet(2, "Venus", "2nd closest to the sun. Rocky terrestrial planet.", False),
-    Planet(3, "Earth", "3rd closest to the sun. Rocky terrestrial planet.", False),
-    Planet(4, "Mars", "4th closest to the sun. Rocky terrestrial planet.", False),
-    Planet(5, "Jupiter", "5th closest to the sun. Jovian planet, one of the gas giants.", False),
-    Planet(6, "Saturn", "6th closest to the sun. Jovian planet, one of the gas giants.", False),
-    Planet(7, "Uranus", "7th closest to the sun. Jovian planet,one of the ice giants.", False),
-    Planet(8, "Neptune", "8th closest to the sun. Jovian planet, one of the ice giants.", False),
-    Planet(9, "Pluto", "9th closets to the sun. A controversial dwarf planet, with wildly tilted, elliptical orbit", False),
+    Planet(1, "Mercury", "The closest to the sun. Rocky terrestrial planet."),
+    Planet(2, "Venus", "2nd closest to the sun. Rocky terrestrial planet."),
+    Planet(3, "Earth", "3rd closest to the sun. Rocky terrestrial planet."),
+    Planet(4, "Mars", "4th closest to the sun. Rocky terrestrial planet."),
+    Planet(5, "Jupiter", "5th closest to the sun. Jovian planet, one of the gas giants."),
+    Planet(6, "Saturn", "6th closest to the sun. Jovian planet, one of the gas giants."),
+    Planet(7, "Uranus", "7th closest to the sun. Jovian planet,one of the ice giants."),
+    Planet(8, "Neptune", "8th closest to the sun. Jovian planet, one of the ice giants."),
+    Planet(9, "Pluto", "9th closets to the sun. A controversial dwarf planet, with wildly tilted, elliptical orbit"),
 ]
 
 
 # Creating the Planet Blueprint 
-planets_bp = Blueprint("planets", __name__)
+# planets_bp = Blueprint("planets", __name__)
+planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
+
 
 # Defining READ Routes with GET method for Planets
-@planets_bp.route("/planets", methods=["GET"])
+# @planets_bp.route("/planets", methods=["GET"])
+@planets_bp.route("", methods=["GET"])
 
 def endpoint_name():
     planet_response_body = []
