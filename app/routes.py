@@ -34,7 +34,7 @@ planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 # @planets_bp.route("/planets", methods=["GET"])
 @planets_bp.route("", methods=["GET"])
 
-def endpoint_name():
+def get_planets_endpoint():
     planet_response_body = []
     
     for planet in planets:
