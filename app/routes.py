@@ -1,32 +1,55 @@
 from flask import Blueprint
+from flask import jsonify
 
-# Creating the Blueprints 
-planets_bp = Blueprint("planets", __name__)
-moons_bp = Blueprint("moons", __name__)
-
-# Defining READ Routes with GET method
-@planets_bp.route("/planets", methods=["GET"])
-def endpoint_name():
-    response_body = "Hello, Planets!"
-    return response_body
-
-@moons_bp.route("/moons", methods=["GET"])
-def endpoint_name():
-    response_body = "Hello, Moons!"
-    return response_body
-
-
-class Planets:
-    def __init__(id, name, description, has_flag= False):
+# Define a `Planet` class with attributes:
+# `id`, `name`,`description`, and one additional(has_flag)
+class Planet:
+    def __init__(self, id, name, description, has_flag= False):
         self.id = id
         self.name = name
         self.description = description
         self.has_flag = has_flag
 
-# planets = [
-#     Planets(name, description),
-#     Planets(name, description),
-#     Planets(name, description),
-#     Planets(nname, description),
-#     Planets(name, description),
-# ]
+# Create a list of `Planet` instances
+# (ordered nearest to the sun to the furthest)
+planets = [
+    Planet(1, "Mercury", "The closest to the sun. Rocky terrestrial planet.", False),
+    Planet(2, "Venus", "2nd closest to the sun. Rocky terrestrial planet.", False),
+    Planet(3, "Earth", "3rd closest to the sun. Rocky terrestrial planet.", False),
+    Planet(4, "Mars", "4th closest to the sun. Rocky terrestrial planet.", False),
+    Planet(5, "Jupiter", "5th closest to the sun. Jovian planet, one of the gas giants.", False),
+    Planet(6, "Saturn", "6th closest to the sun. Jovian planet, one of the gas giants.", False),
+    Planet(7, "Uranus", "7th closest to the sun. Jovian planet,one of the ice giants.", False),
+    Planet(8, "Neptune", "8th closest to the sun. Jovian planet, one of the ice giants.", False),
+    Planet(9, "Pluto", "9th closets to the sun. A controversial dwarf planet, with wildly tilted, elliptical orbit", False),
+]
+
+
+# Creating the Planet Blueprint 
+planets_bp = Blueprint("planets", __name__)
+
+# Defining READ Routes with GET method for Planets
+@planets_bp.route("/planets", methods=["GET"])
+
+def endpoint_name():
+    planet_response_body = []
+    
+    for planet in planets:
+        planet_response_body.append({
+            "id" : planet.id,
+            "name" : planet.name,
+            "description" : planet.description,
+            "has_flag" : planet.has_flag
+        }) 
+    return jsonify(planet_response_body)
+
+
+# Creating the Moon Blueprint 
+# moons_bp = Blueprint("moons", __name__)
+
+# Defining READ Routes with GET method for Moons
+# @moons_bp.route("/moons", methods=["GET"])
+# def endpoint_name():
+#     response_body = "Hello, Moons!"
+#     return response_body
+
