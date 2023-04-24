@@ -60,6 +60,8 @@ def get_planet(planet_id):
                 "description" : planet.description,
                 "has_flag" : planet.has_flag
             }
+    # handles non-existing planet id numbers, like http://localhost:5000/planets/12 : 
+    return {"message":f"planet {planet_id} not found"}, 404
 
 
 
