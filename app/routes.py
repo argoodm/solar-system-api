@@ -47,10 +47,19 @@ def get_planets_endpoint():
     return jsonify(planet_response_body)
 
 
+
+
+# ================================== WAVE 2 =========================
 # get one planet, example: http://localhost:5000/planets/2:
 @planets_bp.route("/<planet_id>", methods = ["GET"])
 def get_planet(planet_id):
-    planet_id = int(planet_id)
+    # planet_id = int(planet_id)
+    
+    # placing the above line within a try/ except block
+    try:
+        planet_id = int(planet_id)
+    except:
+        return {"message":f"planet id {planet_id}  is invalid"}, 400 
     
     for planet in planets:
         if planet.id == planet_id:
