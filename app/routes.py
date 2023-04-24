@@ -47,6 +47,26 @@ def get_planets_endpoint():
     return jsonify(planet_response_body)
 
 
+# get one planet, example: http://localhost:5000/planets/2:
+@planets_bp.route("/<planet_id>", methods = ["GET"])
+def get_planet(planet_id):
+    planet_id = int(planet_id)
+    
+    for planet in planets:
+        if planet.id == planet_id:
+            return {
+                "id" : planet.id,
+                "name" : planet.name,
+                "description" : planet.description,
+                "has_flag" : planet.has_flag
+            }
+
+
+
+
+
+
+
 # Creating the Moon Blueprint 
 # moons_bp = Blueprint("moons", __name__)
 
