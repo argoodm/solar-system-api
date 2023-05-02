@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, make_response, abort
 from app import db
 from .models.planet import Planet
 
-
+# ============================= CREATE ============================= 
 planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 @planets_bp.route("", methods=["POST"])
 def create_planet():
@@ -17,19 +17,12 @@ def create_planet():
     db.session.commit()
 
     return f"Planet: {request_body['name']} was created.", 201
+
+
+# ============================= READ ============================= 
 # Defining READ Routes with GET method for Planets
 # @planets_bp.route("/planets", methods=["GET"])
-
-
 @planets_bp.route("", methods=["GET"])
-def create_planet():
-    request_body = request.get_json()
-    new_planet = Planets(
-        name = request_body["name"],
-        description= request_body["description"],
-        has_flag= request_body["has_flag"]
-    )
-
 def get_planets_endpoint():
     planet_response_body = []
     
@@ -43,12 +36,7 @@ def get_planets_endpoint():
     return jsonify(planet_response_body)
 
 
-
-
-# ================================== WAVE 2 =========================
-#helper function
-
-
+#helper function 
 
 # get one planet, example: http://localhost:5000/planets/2:
 @planets_bp.route("/<planet_id>", methods = ["GET"])
@@ -71,6 +59,8 @@ def get_planet(planet_id):
             }
     # handles non-existing planet id numbers, like http://localhost:5000/planets/12 : 
     return {"message":f"planet {planet_id} not found"}, 404
+
+
 
 
 # Creating the Moon Blueprint 
