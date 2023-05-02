@@ -1,13 +1,26 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response, abort
 from app import db
 from .models.planet import Planet
 
 
 planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
-@planets_bp.route("", methods=['POST'])
+@planets_bp.route("", methods=["POST"])
+def create_planet():
+    request_body = request.get_json()
+    new_planet = Planet(
+        name = request_body["name"],
+        description = request_body["description"],
+        has_flag = request_body["has_flag"]
+    )
 
+    db.session.add(new_planet)
+    db.session.commit()
+
+    return f"Planet: {request_body['name']} was created.", 201
 # Defining READ Routes with GET method for Planets
 # @planets_bp.route("/planets", methods=["GET"])
+
+
 @planets_bp.route("", methods=["GET"])
 def create_planet():
     request_body = request.get_json()
