@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, make_response, abort
 from app import db
-from .models.planet import Planet
+from app.models.planet import Planet
 
 # ================================== HELPER FUNCTION =========================
 # validate planet helper function
@@ -12,25 +12,25 @@ def validate_planet(planet_id):
         planet_id = int(planet_id)
         
     except: 
-        abort(make_response(return {"message":f"planet id {planet_id}  is invalid"}, 400)) 
+        abort(make_response( {"message":f"planet id {planet_id}  is invalid"}, 400)) 
 
     # search for planet_id in data, return planet
     for planet in planets :
-        if planet.id == planetid:
+        if planet.id == int(planet.id):
             return planet
             
 
     # return a 404 for non-existing 
-    abort(make_response(return {"message" : f"book {book_id} not found"}, 404))
+    abort(make_response({"message" : f"book {book_id} not found"}, 404))
 
 
 # ================================== BLUEPRINT =========================
-planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
+planet_bp = Blueprint("planets", __name__, url_prefix="/planets")
 
 
 # ============================= CREATE ============================= 
 # route for creating a planet
-@planets_bp.route("", methods=["POST"])
+@planet_bp.route("", methods=["POST"])
 def create_planet():
     request_body = request.get_json()
     new_planet = Planet(
@@ -48,7 +48,7 @@ def create_planet():
 # ============================= READ ============================= 
 # route with GET method to read all planets
 # @planets_bp.route("/planets", methods=["GET"])
-@planets_bp.route("", methods=["GET"])
+@planet_bp.route("", methods=["GET"])
 def get_all_planets():
     planet_response_body = []
     
@@ -65,7 +65,7 @@ def get_all_planets():
 # route with GET method to read one planet
 # @planets_bp.route("/planets", methods=["GET"])
 # get one planet, example: http://localhost:5000/planets/2:
-@planets_bp.route("/<planet_id>", methods = ["GET"])
+@planet_bp.route("/<planet_id>", methods = ["GET"])
 def get_one_planet(planet_id):
     # planet_id = int(planet_id)
     
@@ -88,11 +88,19 @@ def get_one_planet(planet_id):
 
 # ============================= UPDATE ============================= 
 
-
-
 # ============================= DELETE ============================= 
 
+@planet_bp.route("<planet_id>", methods=["DELETE"])
+def delete_planet(planet_id):
+    try:
+        planet_id = int(planet_id)
+    except:
+        return {"message":f"planet id {planet_id}  is invalid"}, 400 
 
+    db.session.delete(planet)
+    db.session.commit()
+
+    return make_response(f"Planet: {crystal_id} succesfully deleted", 200)
 
 # Creating the Moon Blueprint 
 # moons_bp = Blueprint("moons", __name__)
