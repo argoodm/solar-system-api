@@ -51,19 +51,24 @@ planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 # handle invalid planet_id, return 400
 # responsible for validating & returning the instance of the planet
 
-# def validate_planet(planet_id):
-#     try: 
-#         planet_id = int(planet_id)
-#     except: 
-#         abort(make_response( {"message":f"planet id {planet_id}  is invalid"}, 400)) 
+def validate_planet(planet_id):
+    try: 
+        planet_id = int(planet_id)
+    except: 
+        abort(make_response({"message" :f"planet id {planet_id}  is invalid ({type(planet_id)}. Must be an integer"}, 400)) 
+    
+    planet = Planet.query.get(planet_id)
+    
+    if not planet:
+        abort(make_response({"message" :f"planet {planet_id} does not exist"}, 404))
 
-#     # search for planet_id in data, return planet
-#     for planet in planets :
-#         if  planet_id == int(planet.id):
-#             return planet
-#     # return a 404 for non-existing 
-#     abort(make_response({"message" : f"planet {planet_id} not found"}, 404))
-
+    # search for planet_id in data, return planet
+    # for planet in planets:
+    if  planet.id == planet_id:
+        return planet
+    
+    
+        
 
 # ============================= CREATE ============================= 
 # route for creating a planet
@@ -113,66 +118,56 @@ def create_planet():
 # Defining READ Routes with GET method for Planets
 @planets_bp.route("", methods=["GET"])
 
-def get_planets_endpoint():
-    planet_response_body = []
+def get_all_planets():
+    planets_response = []
+    planets = Planet.query.all()
+    # planets = validate_planet(planet_id)
+
     
     for planet in planets:
-        planet_response_body.append({
+        planets_response.append({
             "id" : planet.id,
             "name" : planet.name,
             "description" : planet.description,
             "has_flag" : planet.has_flag
         }) 
-    return jsonify(planet_response_body)
-
-
-# @planets_bp.route("", methods=["GET"])
-# def get_all_planets():
-#     planets_response_body = []
-#     planets = Planet.query.all()
-    
-#     for planet in planets:
-#         planets_response_body.append({
-#             "id" : planet.id,
-#             "name" : planet.name,
-#             "description" : planet.description,
-#             "has_flag" : planet.has_flag
-#         }) 
-#     return jsonify(planets_response_body, 200)
+    return jsonify(planets_response, 200)
 
 # ============================= READ ONE ============================= 
 # route with GET method to read one planet
 # @planets_bp.route("/planets", methods=["GET"])
 # get one planet, example: http://localhost:5000/planets/2:
 @planets_bp.route("/<planet_id>", methods = ["GET"])
-# def get_one_planet(planet_id):
-#     planet = validate_planet(planet_id)
-    
-#     return {
-#             "planet_id" : planet.id,
-#             "name" : planet.name,
-#             "description" : planet.description,
-#             "has_flag" : planet.has_flag
-#     }    
-    
 
-#  ORIGINAL 
+# using helper function: 
 def get_one_planet(planet_id):
-    try:
-        planet_id = int(planet_id)
-    except:
-        return {"message":f"planet id {planet_id}  is invalid"}, 400 
+    planet = validate_planet(planet_id)
     
-    for planet in planets:
-        if planet.id == planet_id:
-            return {
-                "id" : planet.id,
-                "name" : planet.name,
-                "description" : planet.description,
-                "has_flag" : planet.has_flag
-            }
-    # handles non-existing planet id numbers, like http://localhost:5000/planets/12 : 
-    return {"message":f"planet {planet_id} not found"}, 404
+    return {
+            "id" : planet.id,
+            "name" : planet.name,
+            "description" : planet.description,
+            "has_flag" : planet.has_flag
+    }    
+
+# original :
+# def get_one_planet(planet_id):
+#     try:
+#         planet_id = int(planet_id)
+#     except:
+#         return {"message":f"Planet id {planet_id} is invalid"}, 400
+    
+    
+#     for planet in planets:
+#         if planet.id == planet_id:
+#             return {
+#                 "id": planet.id,
+#                 "name": planet.name,
+#                 "description": planet.description,
+#                 "has_flag": planet.has_flag
+#             }
+#     return {"message":f"planet {planet_id} not found"}, 404
+
 
 # ============================= UPDATE ============================= 
 
