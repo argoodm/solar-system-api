@@ -170,6 +170,32 @@ def get_one_planet(planet_id):
 
 
 # ============================= UPDATE ============================= 
+# route for updating a planet with PUT method
+@planets_bp.route("/<planet_id>", methods = ["PUT"])
+def update_planet(planet_id):
+    
+    # query our db to grab the planet that has the id we want
+    # planet = Planet.query.get(planet_id)
+    planet = validate_planet(planet_id)
+    
+    request_body = request.get_json()
+    
+    planet.name = request_body["name"]
+    planet.description = request_body["description"]
+    planet.has_flag = request_body["has_flag"]
+    
+    db.session.commit()
+    
+    # send back the updated planet
+    return {
+        "id": planet.id,
+        "name": planet.name,
+        "description": planet.description,
+        "has_flag": planet.has_flag
+    
+    }, 200
+
+
 
 # ============================= DELETE ============================= 
 
