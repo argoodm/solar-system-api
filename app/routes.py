@@ -198,18 +198,15 @@ def update_planet(planet_id):
 
 
 # ============================= DELETE ============================= 
+# route for deleting a planet with DELETE method
+@planets_bp.route("/<planet_id>", methods = ["DELETE"])
+def delete_planet(planet_id):
+    planet = validate_planet(planet_id) 
 
-# @planets_bp.route("<planet_id>", methods=["DELETE"])
-# def delete_planet(planet_id):
-#     try:
-#         planet_id = int(planet_id)
-#     except:
-#         return {"message":f"planet id {planet_id}  is invalid"}, 400 
+    db.session.delete(planet)
+    db.session.commit()
 
-#     db.session.delete(planet)
-#     db.session.commit()
-
-#     return make_response(f"Planet: {crystal_id} succesfully deleted", 200)
+    return make_response(f"Planet: {planet_id} succesfully deleted", 200)
 
 
 
