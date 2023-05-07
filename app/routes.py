@@ -50,6 +50,19 @@ planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 # search for planet_id in data, return planet
 # handle invalid planet_id, return 400
 # responsible for validating & returning the instance of the planet
+# orignal:
+# def validate_planet(planet_id):
+#     try:
+#         planet_id = int(planet_id)
+#     except:
+#         abort(make_response({"message":f"planet {planet_id} invalid"}, 400))
+
+#     for planet in planets:
+#         if planet.id == planet_id:
+#             return planet_id
+
+#     abort(make_response({"message":f"planet {planet_id} not found"}, 404))
+
 
 def validate_planet(planet_id):
     try: 
@@ -187,14 +200,12 @@ def update_planet(planet_id):
     db.session.commit()
     
     # send back the updated planet
-    return {
-        "id": planet.id,
-        "name": planet.name,
-        "description": planet.description,
-        "has_flag": planet.has_flag
-    
-    }, 200
-
+    # return make_response(f"Planet #{planet.id} successfully updated")
+    return ({"id": planet.id,
+            "name": planet.name,
+            "description": planet.description,
+            "has_flag": planet.has_flag
+            }), 200
 
 
 # ============================= DELETE ============================= 
