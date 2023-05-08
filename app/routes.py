@@ -133,8 +133,15 @@ def create_planet():
 
 def get_all_planets():
     planets_response = []
-    planets = Planet.query.all()
     # planets = validate_planet(planet_id)
+    
+    # updated from query params lesson
+    name_query = request.args.get("name")
+    
+    if name_query is not None: 
+        planets = Planet.query.filter_by(name=name_query)
+    else:
+        planets = Planet.query.all()
 
     
     for planet in planets:
@@ -200,12 +207,12 @@ def update_planet(planet_id):
     db.session.commit()
     
     # send back the updated planet
-    # return make_response(f"Planet #{planet.id} successfully updated")
-    return ({"id": planet.id,
-            "name": planet.name,
-            "description": planet.description,
-            "has_flag": planet.has_flag
-            }), 200
+    return make_response(f"Planet #{planet.id} successfully updated"), 200
+    # return ({"id": planet.id,
+    #         "name": planet.name,
+    #         "description": planet.description,
+    #         "has_flag": planet.has_flag
+    #         }), 200
 
 
 # ============================= DELETE ============================= 
