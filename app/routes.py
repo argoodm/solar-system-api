@@ -1,5 +1,7 @@
 # import modules
 from app import db
+
+# importing the Planet model
 from app.models.planet import Planet
 
 # import dependencies
@@ -64,21 +66,21 @@ planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 #     abort(make_response({"message":f"planet {planet_id} not found"}, 404))
 
 
-def validate_planet(planet_id):
+def validate_model(cls,model_id):
     try: 
-        planet_id = int(planet_id)
+        model_id = int(model_id)
     except: 
-        abort(make_response({"message" :f"planet id {planet_id}  is invalid ({type(planet_id)}. Must be an integer"}, 400)) 
+        abort(make_response({"message" :f"{cls.__name__} id {model_id}  is invalid ({type(model_id)}. Must be an integer"}, 400)) 
     
-    planet = Planet.query.get(planet_id)
+    model = cls.query.get(model_id)
     
-    if not planet:
-        abort(make_response({"message" :f"planet {planet_id} does not exist"}, 404))
+    if not model:
+        abort(make_response({"message" :f"{cls.__name__} {model_id} does not exist"}, 404))
 
     # search for planet_id in data, return planet
     # for planet in planets:
-    if  planet.id == planet_id:
-        return planet
+    if  model.id == model_id:
+        return model
     
     
         
@@ -107,10 +109,13 @@ def create_planet():
     if "name" not in request_body or "description" not in request_body:
         return make_response("Invalid request", 400)
     
-    new_planet = Planet(name = request_body["name"],
-        description = request_body["description"],
-        has_flag = request_body["has_flag"]
-    )
+    # new_planet = Planet(name = request_body["name"],
+    #     description = request_body["description"],
+    #     has_flag = request_body["has_flag"]
+    # )
+    # refactored:
+    new_planet = Planet.from_dict(request_body)
+    
 
 #     # the database's way of collecting changes(add(new_planet)) that need to be made
     db.session.add(new_planet)
@@ -145,12 +150,15 @@ def get_all_planets():
 
     
     for planet in planets:
-        planets_response.append({
-            "id" : planet.id,
-            "name" : planet.name,
-            "description" : planet.description,
-            "has_flag" : planet.has_flag
-        }) 
+        # planets_response.append({
+        #     "id" : planet.id,
+        #     "name" : planet.name,
+        #     "description" : planet.description,
+        #     "has_flag" : planet.has_flag
+        # }) 
+        # refactor:
+        planets_response.append(planet.to_dict())
+        
     return jsonify(planets_response, 200)
 
 # ============================= READ ONE ============================= 
@@ -161,14 +169,16 @@ def get_all_planets():
 
 # using helper function: 
 def get_one_planet(planet_id):
-    planet = validate_planet(planet_id)
+    planet = validate_model(Planet, planet_id)
     
-    return {
-            "id" : planet.id,
-            "name" : planet.name,
-            "description" : planet.description,
-            "has_flag" : planet.has_flag
-    }    
+    # return {
+    #         "id" : planet.id,
+    #         "name" : planet.name,
+    #         "description" : planet.description,
+    #         "has_flag" : planet.has_flag
+    # }    
+    # refactor:
+    return planet.to_dict()
 
 # original :
 # def get_one_planet(planet_id):
@@ -196,7 +206,7 @@ def update_planet(planet_id):
     
     # query our db to grab the planet that has the id we want
     # planet = Planet.query.get(planet_id)
-    planet = validate_planet(planet_id)
+    planet = validate_model(Planet,planet_id)
     
     request_body = request.get_json()
     
@@ -219,7 +229,7 @@ def update_planet(planet_id):
 # route for deleting a planet with DELETE method
 @planets_bp.route("/<planet_id>", methods = ["DELETE"])
 def delete_planet(planet_id):
-    planet = validate_planet(planet_id) 
+    planet = validate_model(Planet,planet_id) 
 
     db.session.delete(planet)
     db.session.commit()
